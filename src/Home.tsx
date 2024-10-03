@@ -2,7 +2,7 @@ import './reset.css';
 
 import styles from './Home.module.css';
 
-export const Home = () => {
+const Home = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.content}>

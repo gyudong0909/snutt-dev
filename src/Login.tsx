@@ -2,7 +2,7 @@ import './reset.css';
 
 import styles from './Login.module.css';
 
-export const Login = () => {
+const Login = () => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.content}>
