@@ -1,0 +1,31 @@
+.wrapper {
+  padding-top: 232px;
+  padding-bottom: 90px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 136px;
+}
+
+.title {
+  font-family: SF Pro;
+  font-size: 21.35px;
+  font-weight: 860;
+  line-height: 25.48px;
+  text-align: center;
+}
+
+.loginButton {
+  width: Fill (311px) px;
+  height: Hug (41px) px;
+  padding: 12px;
+  gap: 5px;
+  border-radius: 6px;
+  font-family: Pretendard;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16.71px;
+  text-align: left;
+}

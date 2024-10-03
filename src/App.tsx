@@ -1,9 +1,17 @@
 import './reset.css';
 
-import { useReducer } from 'react';
+import styles from './App.module.css';
 
 export const App = () => {
-  const [count, increment] = useReducer((c: number) => c + 1, 0);
-
-  return <button onClick={increment}>{count}</button>;
+  return (
+    <div className={styles.wrapper}>
+      <div className={styles.content}>
+        <div>
+          <img src="" />
+          <h1 className={styles.title}>TimeTable</h1>
+        </div>
+        <button className={styles.loginButton}>로그인</button>
+      </div>
+    </div>
+  );
 };
