@@ -2,14 +2,19 @@ import './reset.css';
 
 import { useEffect, useState } from 'react';
 
-import Home from './Home.tsx';
-import Login from './Login.tsx';
+import Home from './Home';
+import Login from './Login';
 
 export const App = () => {
   const [isLoginPage, setIsLoginPage] = useState(false);
 
   useEffect(() => {
-    setIsLoginPage(true);
+    setIsLoginPage(false);
   }, []);
-  return isLoginPage ? <Login /> : <Home />;
+
+  const handleLoginButton = () => {
+    setIsLoginPage(true);
+  };
+
+  return isLoginPage ? <Login /> : <Home onLoginButton={handleLoginButton} />;
 };
