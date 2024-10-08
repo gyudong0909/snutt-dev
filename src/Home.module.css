@@ -55,7 +55,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
   color: var(--Text-Plain, #505050);
   text-align: center;
   font-feature-settings:
@@ -68,6 +67,7 @@
   line-height: normal;
   background-color: white;
   border: none;
+  cursor: pointer;
 }
 
 .signUpButton:disabled {
@@ -143,6 +143,7 @@
 .frame202:hover img:not(.disabled) {
   transform: scale(1.1);
   filter: brightness(0.9);
+  cursor: pointer;
 }
 
 .frame203 {
@@ -154,11 +155,13 @@
 .frame203 img:not(.disabled):hover {
   transform: scale(1.1);
   filter: brightness(0.9);
+  cursor: pointer;
 }
 
 .frame202:has(img:not(.disabled)):hover {
   transform: scale(1.1);
   filter: brightness(0.9);
+  cursor: pointer;
 }
 
 .disabled {
