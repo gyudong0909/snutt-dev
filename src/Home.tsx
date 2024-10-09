@@ -1,33 +1,66 @@
 import './reset.css';
 
 import styles from './Home.module.css';
+import appleIcon from './icons/apple.png';
+import facebookIcon from './icons/facebook.png';
+import googleIcon from './icons/google.png';
+import kakaoIcon from './icons/kakao.png';
+import logo from './icons/logo.png';
 
-const Home = () => {
+const Home = ({ onLoginButton }: { onLoginButton: () => void }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.content}>
-        <div>
-          <img src="" />
+        <div className={styles.frame205}>
+          <img src={logo} alt="Logo" />
           <h1 className={styles.title}>TimeTable</h1>
         </div>
-        <div>
-          <div>
-            <button className={styles.loginButton}>로그인</button>
-            <button className={styles.signUpButton}>회원가입</button>
-          </div>
-          <div>
-            <div>
-              <div>
-                <hr />
-                SNS 계정으로 계속하기
-                <hr />
-              </div>
+        <div className={styles.frame206}>
+          <div className={styles.frame214}>
+            <div className={styles.frame201}>
+              <button className={styles.loginButton} onClick={onLoginButton}>
+                로그인
+              </button>
+              <button disabled className={styles.signUpButton}>
+                회원가입
+              </button>
+            </div>
+            <div className={styles.frame215}>
+              <div className={styles.frame204}>
+                <div className={styles.frame200}>
+                  <hr className={styles.line} />
+                  <span className={styles.snsText}>SNS 계정으로 계속하기</span>
+                  <hr className={styles.line} />
+                </div>
 
-              <div>
-                <img src="" /> {/* 카톡 구글 페북 애플 아이콘 */}
-                <img src="" />
-                <img src="" />
-                <img src="" />
+                <div className={styles.frame203}>
+                  {/* 
+                  나중에 이미지에 onclick 함수 추가
+                  hover 구현은 일단 완료해놓음.
+                  */}
+                  <img
+                    src={kakaoIcon}
+                    alt="Kakao"
+                    className={styles.disabled}
+                  />
+                  <div className={styles.frame202}>
+                    <img
+                      src={googleIcon}
+                      alt="Google"
+                      className={styles.disabled}
+                    />
+                  </div>
+                  <img
+                    src={facebookIcon}
+                    alt="Facebook"
+                    className={styles.disabled}
+                  />
+                  <img
+                    src={appleIcon}
+                    alt="Apple"
+                    className={styles.disabled}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -36,4 +69,5 @@ const Home = () => {
     </div>
   );
 };
+
 export default Home;
