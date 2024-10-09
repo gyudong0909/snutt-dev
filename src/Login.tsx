@@ -84,8 +84,7 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
             return responseInfo.json() as Promise<InfoResponse>;
           })
           .then((responseInfo) => {
-            if (responseInfo !== undefined)
-            setNickname(responseInfo.nickname);
+            if (responseInfo !== undefined) setNickname(responseInfo.nickname);
             onLoginSuccess();
           })
           .catch(() => {
