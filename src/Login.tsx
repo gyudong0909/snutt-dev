@@ -1,5 +1,7 @@
 import './reset.css';
 
+import { useCallback } from 'react';
+
 import styles from './Login.module.css';
 
 type TokenRequest = {
@@ -35,7 +37,7 @@ interface LoginProps {
 }
 
 const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
-  const RequestLogin = () => {
+  const RequestLogin = useCallback(() => {
     const idInputElement = document.getElementById(`id`) as HTMLInputElement;
     const pwInputElement = document.getElementById(`pw`) as HTMLInputElement;
 
@@ -44,7 +46,6 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
       password: pwInputElement.value,
     };
 
-    let ignore = false;
     fetch(
       `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/auth/login_local`,
       {
@@ -57,16 +58,17 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
     )
       .then((response) => {
         if (!response.ok) {
-          if (response.status === 403)
+          if (response.status === 403) {
             alert(`아이디 또는 비밀번호가 잘못되었습니다.`);
-          else alert(`로그인 요청 오류 발생: ${response.status}`);
+          } else {
+            alert(`로그인 요청 오류 발생: ${response.status}`);
+          }
+          throw new Error('Login failed');
         }
         return response.json() as Promise<TokenResponse>;
       })
       .then((response) => {
-        if (ignore) return;
-
-        fetch(
+        return fetch(
           `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/users/me`,
           {
             method: 'GET',
@@ -75,30 +77,27 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
               'x-access-token': response.token ?? '',
             },
           },
-        )
-          .then((responseInfo) => {
-            if (!responseInfo.ok) {
-              alert(`정보 불러오기 중 오류 발생: ${responseInfo.status}`);
-              return;
-            }
-            return responseInfo.json() as Promise<InfoResponse>;
-          })
-          .then((responseInfo) => {
-            if (responseInfo !== undefined) setNickname(responseInfo.nickname);
-            onLoginSuccess();
-          })
-          .catch(() => {
-            window.alert();
-          });
+        );
       })
-      .catch(() => {
-        window.alert();
+      .then((responseInfo) => {
+        if (!responseInfo.ok) {
+          alert(`정보 불러오기 중 오류 발생: ${responseInfo.status}`);
+          throw new Error('Fetching user info failed');
+        }
+        return responseInfo.json() as Promise<InfoResponse>;
+      })
+      .then((responseInfo) => {
+        setNickname(responseInfo.nickname);
+        onLoginSuccess();
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error) {
+          console.error(error.message);
+        } else {
+          console.error('알 수 없는 오류가 발생했습니다.');
+        }
       });
-
-    return () => {
-      ignore = true;
-    };
-  };
+  }, [setNickname, onLoginSuccess]);
 
   return (
     <div className={styles.wrapper}>
@@ -131,4 +130,5 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
     </div>
   );
 };
+
 export default Login;
