@@ -4,6 +4,7 @@
   padding-right: 20px;
   min-height: 100vh;
   justify-content: space-between;
+  background-color: white;
 }
 
 .title {
@@ -34,6 +35,7 @@
   border-bottom: 1px solid #ccc;
   color: #333;
   cursor: pointer;
+  font-size: 15px;
 }
 
 .box:hover {
@@ -55,7 +57,9 @@
 }
 
 .extra {
-  font-size: 15px;
+  margin-top: 5px;
+  font-size: 12px;
+  margin-left: 2px;
 }
 
 .bottom:hover {
