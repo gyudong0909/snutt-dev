@@ -124,7 +124,9 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
             />
             <div className={styles.extra}>아이디 찾기 | 비밀번호 재설정</div>
           </div>
-          <button onClick={RequestLogin}>로그인</button>
+          <button onClick={RequestLogin} className={styles.bottom}>
+            로그인
+          </button>
         </div>
       </div>
     </div>
