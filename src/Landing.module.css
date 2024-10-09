@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap');
+
+body {
+  font-family: 'Nanum Gothic', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  font-size: 20px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  height: 100vh;
+  background-color: white;
+}
+
+.body {
+  font-size: 2em;
+  animation:
+    growAndBlink 5s ease-in-out forwards,
+    spinAndShrink 5s 5s linear forwards;
+  opacity: 0;
+}
+
+@keyframes growAndBlink {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  50% {
+    transform: scale(2);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  70% {
+    transform: scale(4);
+    opacity: 0;
+  }
+  80% {
+    opacity: 1;
+    transform: scale(6);
+  }
+  90% {
+    opacity: 0;
+    transform: scale(8);
+  }
+  92%,
+  94%,
+  96%,
+  98% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(10);
+  }
+}
+
+@keyframes spinAndShrink {
+  0% {
+    transform: rotate(0deg) scale(10);
+  }
+  100% {
+    transform: rotate(10800deg) scale(1);
+  }
+}
