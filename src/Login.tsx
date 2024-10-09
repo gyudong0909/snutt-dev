@@ -122,7 +122,7 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
               placeholder="비밀번호를 입력하세요"
               className={styles.box}
             />
-            <div className={styles.extra}>아이디 찾기 | 비밀번호 재설정</div>
+            <div className={styles.extra}> 아이디 찾기 | 비밀번호 재설정</div>
           </div>
           <button onClick={RequestLogin} className={styles.bottom}>
             로그인
