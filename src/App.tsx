@@ -11,6 +11,7 @@ export const App = () => {
     'home',
   );
 
+
   const handleLoginButton = () => {
     setCurrentPage('login');
   };
