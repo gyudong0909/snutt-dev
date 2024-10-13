@@ -3,7 +3,7 @@ import './reset.css';
 import { useState } from 'react';
 
 import Home from './Home';
-import Landing from './Landing.tsx';
+import Landing from './Landing';
 import Login from './Login';
 export const App = () => {
   const [currentPage, setCurrentPage] = useState<'home' | 'login' | 'landing'>(

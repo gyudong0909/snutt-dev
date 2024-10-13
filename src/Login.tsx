@@ -1,21 +1,21 @@
 import './reset.css';
 
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import styles from './Login.module.css';
 
 type TokenRequest = {
-  id?: string;
-  password?: string;
+  id: string;
+  password: string;
 };
 
 type TokenResponse = {
-  user_id?: string;
-  token?: string;
-  message?: string;
+  user_id: string;
+  token: string;
+  message: string;
 };
 
-type NicknameType = {
+type Nickname = {
   nickname: string;
   tag: string;
 };
@@ -32,18 +32,24 @@ type InfoResponse = {
 };
 
 interface LoginProps {
-  setNickname: (nickname: NicknameType) => void;
+  setNickname: (nickname: Nickname) => void;
   onLoginSuccess: () => void;
 }
 
 const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
-  const RequestLogin = useCallback(() => {
-    const idInputElement = document.getElementById(`id`) as HTMLInputElement;
-    const pwInputElement = document.getElementById(`pw`) as HTMLInputElement;
+  const [idInput, setIdInput] = useState('');
+  const [pwInput, setPwInput] = useState('');
+  const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIdInput(e.target.value);
+  };
+  const onChangePw = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPwInput(e.target.value);
+  };
 
+  const requestLogin = useCallback(() => {
     const requestBody: TokenRequest = {
-      id: idInputElement.value,
-      password: pwInputElement.value,
+      id: idInput,
+      password: pwInput,
     };
 
     fetch(
@@ -74,7 +80,7 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              'x-access-token': response.token ?? '',
+              'x-access-token': response.token,
             },
           },
         );
@@ -97,7 +103,7 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
           console.error('알 수 없는 오류가 발생했습니다.');
         }
       });
-  }, [setNickname, onLoginSuccess]);
+  }, [setNickname, onLoginSuccess, idInput, pwInput]);
 
   return (
     <div className={styles.wrapper}>
@@ -109,7 +115,7 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
             <label>아이디</label>
             <input
               type="text"
-              id="id"
+              onChange={onChangeId}
               placeholder="아이디를 입력하세요"
               className={styles.box}
             />
@@ -118,13 +124,13 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
             <label>비밀번호</label>
             <input
               type="password"
-              id="pw"
+              onChange={onChangePw}
               placeholder="비밀번호를 입력하세요"
               className={styles.box}
             />
             <div className={styles.extra}> 아이디 찾기 | 비밀번호 재설정</div>
           </div>
-          <button onClick={RequestLogin} className={styles.bottom}>
+          <button onClick={requestLogin} className={styles.bottom}>
             로그인
           </button>
         </div>
