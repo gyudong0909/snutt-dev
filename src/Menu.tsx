@@ -1,6 +1,4 @@
 // Menu.tsx
-import React from 'react';
-
 interface MenuProps {
   nickname: string;
 }
