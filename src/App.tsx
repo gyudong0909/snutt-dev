@@ -9,10 +9,7 @@ export const App = () => {
   const [currentPage, setCurrentPage] = useState<'home' | 'login' | 'landing'>(
     'home',
   );
-  const [nickname, setNickname] = useState<{
-    nickname: string;
-    tag: string;
-  }>();
+  const [token, setToken] = useState<string>();
   const handleLoginButton = () => {
     setCurrentPage('login');
   };
@@ -23,10 +20,10 @@ export const App = () => {
     <>
       {currentPage === 'home' && <Home onLoginButton={handleLoginButton} />}
       {currentPage === 'login' && (
-        <Login setNickname={setNickname} onLoginSuccess={handleLoginSuccess} />
+        <Login setToken={setToken} onLoginSuccess={handleLoginSuccess} />
       )}
-      {currentPage === 'landing' && nickname !== undefined && (
-        <Landing nickname={`${nickname.nickname}#${nickname.tag}`} />
+      {currentPage === 'landing' && token !== undefined && (
+        <Landing token={token} />
       )}
     </>
   );

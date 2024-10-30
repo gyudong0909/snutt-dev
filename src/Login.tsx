@@ -1,6 +1,6 @@
 import './reset.css';
 
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import styles from './Login.module.css';
 
@@ -15,28 +15,12 @@ type TokenResponse = {
   message: string;
 };
 
-type Nickname = {
-  nickname: string;
-  tag: string;
-};
-
-type InfoResponse = {
-  id: string;
-  isAdmin: boolean;
-  regDate: string;
-  notificationCheckedAt: string;
-  email: string;
-  localId: string;
-  fbName: string;
-  nickname: { nickname: string; tag: string };
-};
-
 interface LoginProps {
-  setNickname: (nickname: Nickname) => void;
+  setToken: (token: string) => void;
   onLoginSuccess: () => void;
 }
 
-const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
+const Login = ({ setToken, onLoginSuccess }: LoginProps) => {
   const [idInput, setIdInput] = useState('');
   const [pwInput, setPwInput] = useState('');
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,13 +30,13 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
     setPwInput(e.target.value);
   };
 
-  const requestLogin = useCallback(() => {
+  const fetchLoginRequest = async (id: string, password: string) => {
     const requestBody: TokenRequest = {
-      id: idInput,
-      password: pwInput,
+      id: id,
+      password: password,
     };
 
-    fetch(
+    const response = await fetch(
       `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/auth/login_local`,
       {
         method: 'POST',
@@ -61,49 +45,20 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
         },
         body: JSON.stringify(requestBody),
       },
-    )
-      .then((response) => {
-        if (!response.ok) {
-          if (response.status === 403) {
-            alert(`아이디 또는 비밀번호가 잘못되었습니다.`);
-          } else {
-            alert(`로그인 요청 오류 발생: ${response.status}`);
-          }
-          throw new Error('Login failed');
-        }
-        return response.json() as Promise<TokenResponse>;
-      })
-      .then((response) => {
-        return fetch(
-          `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/users/me`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-access-token': response.token,
-            },
-          },
-        );
-      })
-      .then((responseInfo) => {
-        if (!responseInfo.ok) {
-          alert(`정보 불러오기 중 오류 발생: ${responseInfo.status}`);
-          throw new Error('Fetching user info failed');
-        }
-        return responseInfo.json() as Promise<InfoResponse>;
-      })
-      .then((responseInfo) => {
-        setNickname(responseInfo.nickname);
-        onLoginSuccess();
-      })
-      .catch((error: unknown) => {
-        if (error instanceof Error) {
-          console.error(error.message);
-        } else {
-          console.error('알 수 없는 오류가 발생했습니다.');
-        }
-      });
-  }, [setNickname, onLoginSuccess, idInput, pwInput]);
+    );
+    return response;
+  };
+  const requestLogin = async () => {
+    const loginResponse = await fetchLoginRequest(idInput, pwInput);
+    if (loginResponse.type === 'error') {
+      alert('LoginRequest fetch 오류 발생');
+      return;
+    }
+    const data = (await loginResponse.json()) as TokenResponse;
+    setToken(data.token);
+    onLoginSuccess();
+    return;
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -130,7 +85,14 @@ const Login = ({ setNickname, onLoginSuccess }: LoginProps) => {
             />
             <div className={styles.extra}> 아이디 찾기 | 비밀번호 재설정</div>
           </div>
-          <button onClick={requestLogin} className={styles.bottom}>
+          <button
+            onClick={() => {
+              requestLogin().catch((e: unknown) => {
+                alert(e);
+              });
+            }}
+            className={styles.bottom}
+          >
             로그인
           </button>
         </div>
