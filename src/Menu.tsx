@@ -7,6 +7,8 @@ import reviewIcon from './icons/review.png';
 import searchIcon from './icons/search.png';
 import threedotsIcon from './icons/threedots.png';
 import timetableIcon from './icons/timetable.png';
+import MainPage from './Mainpage';
+import MyPage from './Mypage';
 
 const Menu = () => {
   return (
@@ -37,20 +39,5 @@ const Menu = () => {
     </div>
   );
 };
-const MainPage = () => {
-  return (
-    <div>
-      <h1>메인</h1>
-      <Link to="/mypage">메인화면</Link>
-    </div>
-  );
-};
-const MyPage = () => {
-  return (
-    <div>
-      <h1>마이페이지</h1>
-      <Link to="/">메인화면</Link>
-    </div>
-  );
-};
+
 export default Menu;
