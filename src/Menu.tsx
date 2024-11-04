@@ -1,16 +1,26 @@
 import './reset.css';
 
-import { Link, Route, Routes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 
 import friendIcon from './icons/friend.png';
 import reviewIcon from './icons/review.png';
 import searchIcon from './icons/search.png';
 import threedotsIcon from './icons/threedots.png';
+import threedotsIconActive from './icons/threedots_active.png';
 import timetableIcon from './icons/timetable.png';
+import timetableIconActive from './icons/timetable_active.png';
 import MainPage from './Mainpage';
 import MyPage from './Mypage';
 
 const Menu = () => {
+  const location = useLocation();
+  const [activePath, setActivePath] = useState(location.pathname);
+
+  useEffect(() => {
+    setActivePath(location.pathname);
+  }, [location]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <div style={{ flex: 1 }}>
@@ -21,19 +31,62 @@ const Menu = () => {
       </div>
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginLeft: '30px',
+          marginRight: '30px',
+          marginBottom: '44px',
         }}
       >
         <Link to="/">
-          <img src={timetableIcon} alt="timetable" />
+          <img
+            src={activePath === '/' ? timetableIconActive : timetableIcon}
+            alt="timetable"
+            style={{
+              width: '30px',
+              height: '30px',
+              border: '2px dashed #808080',
+            }}
+          />
         </Link>
-        <img src={searchIcon} alt="search" />
-        <img src={reviewIcon} alt="review" />
-        <img src={friendIcon} alt="friend" />
+        <img
+          src={searchIcon}
+          alt="search"
+          style={{
+            width: '30px',
+            height: '30px',
+            border: '2px dashed #808080',
+          }}
+        />
+        <img
+          src={reviewIcon}
+          alt="review"
+          style={{
+            width: '30px',
+            height: '30px',
+            border: '2px dashed #808080',
+          }}
+        />
+        <img
+          src={friendIcon}
+          alt="friend"
+          style={{
+            width: '30px',
+            height: '30px',
+            border: '2px dashed #808080',
+          }}
+        />
         <Link to="/mypage">
-          <img src={threedotsIcon} alt="threedots" />
+          <img
+            src={activePath === '/mypage' ? threedotsIconActive : threedotsIcon}
+            alt="threedots"
+            style={{
+              width: '30px',
+              height: '30px',
+              border: '2px dashed #808080',
+            }}
+          />
         </Link>
       </div>
     </div>
