@@ -17,13 +17,20 @@ export const App = () => {
   const handleLoginSuccess = () => {
     setCurrentPage('menu');
   };
+  const handleLogout = () => {
+    setToken(undefined);
+    setCurrentPage('login');
+  };
+
   return (
     <>
       {currentPage === 'home' && <Home onLoginButton={handleLoginButton} />}
       {currentPage === 'login' && (
         <Login setToken={setToken} onLoginSuccess={handleLoginSuccess} />
       )}
-      {currentPage === 'menu' && <Menu />}
+      {currentPage === 'menu' && token !== undefined && (
+        <Menu token={token} onLogout={handleLogout} />
+      )}
       {currentPage === 'landing' && token !== undefined && (
         <Landing token={token} />
       )}
