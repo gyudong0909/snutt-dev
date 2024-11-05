@@ -13,7 +13,12 @@ import timetableIconActive from './icons/timetable_active.png';
 import MainPage from './Mainpage';
 import MyPage from './Mypage';
 
-const Menu = () => {
+interface MenuProps {
+  token: string;
+  onLogout: () => void;
+}
+
+const Menu = ({ token, onLogout }: MenuProps) => {
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);
 
@@ -26,7 +31,10 @@ const Menu = () => {
       <div style={{ flex: 1 }}>
         <Routes>
           <Route element={<MainPage />} path="/" />
-          <Route element={<MyPage />} path="/mypage" />
+          <Route
+            element={<MyPage token={token} onLogout={onLogout} />}
+            path="/mypage"
+          />
         </Routes>
       </div>
       <div
