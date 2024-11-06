@@ -66,3 +66,8 @@
   background-color: #555;
   opacity: 0.5;
 }
+
+.backbutton {
+  cursor: pointer;
+  border: black;
+}
