@@ -11,8 +11,15 @@ export const App = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<
     'home' | 'login' | 'menu' | 'landing'
-  >('home');
+  >(() => {
+    const savedPage = localStorage.getItem('currentPage');
+    return savedPage != null
+      ? (savedPage as 'home' | 'login' | 'menu' | 'landing')
+      : 'home';
+  });
+
   const [token, setToken] = useState<string>();
+
   const handleLoginButton = () => {
     setCurrentPage('login');
   };
@@ -23,7 +30,12 @@ export const App = () => {
     setToken(undefined);
     localStorage.removeItem('token');
     setCurrentPage('login');
+    localStorage.removeItem('currentPage');
     navigate('/');
+  };
+
+  const handleBackToHome = () => {
+    setCurrentPage('home');
   };
 
   useEffect(() => {
@@ -40,11 +52,19 @@ export const App = () => {
     }
   }, [token]);
 
+  useEffect(() => {
+    localStorage.setItem('currentPage', currentPage);
+  }, [currentPage]);
+
   return (
     <>
       {currentPage === 'home' && <Home onLoginButton={handleLoginButton} />}
       {currentPage === 'login' && (
-        <Login setToken={setToken} onLoginSuccess={handleLoginSuccess} />
+        <Login
+          setToken={setToken}
+          onLoginSuccess={handleLoginSuccess}
+          onBackToHome={handleBackToHome}
+        />
       )}
       {currentPage === 'menu' && token !== undefined && (
         <Menu token={token} onLogout={handleLogout} />

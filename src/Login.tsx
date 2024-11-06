@@ -18,11 +18,13 @@ type TokenResponse = {
 interface LoginProps {
   setToken: (token: string) => void;
   onLoginSuccess: () => void;
+  onBackToHome: () => void;
 }
 
-const Login = ({ setToken, onLoginSuccess }: LoginProps) => {
+const Login = ({ setToken, onLoginSuccess, onBackToHome }: LoginProps) => {
   const [idInput, setIdInput] = useState('');
   const [pwInput, setPwInput] = useState('');
+
   const onChangeId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIdInput(e.target.value);
   };
@@ -65,6 +67,9 @@ const Login = ({ setToken, onLoginSuccess }: LoginProps) => {
       <div className={styles.content}>
         {/* 로그인 페이지 */}
         <div>
+          <button onClick={onBackToHome} className={styles.backbutton}>
+            뒤로가기
+          </button>
           <label className={styles.title}>로그인</label>
           <div className={styles.input}>
             <label>아이디</label>
