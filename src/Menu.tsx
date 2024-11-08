@@ -30,7 +30,7 @@ const Menu = ({ token, onLogout }: MenuProps) => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <div style={{ flex: 1 }}>
         <Routes>
-          <Route element={<MainPage />} path="/" />
+          <Route element={<MainPage token={token} />} path="/" />
           <Route
             element={<MyPage token={token} onLogout={onLogout} />}
             path="/mypage"
