@@ -13,7 +13,7 @@ const Home = ({ onLoginButton }: { onLoginButton: () => void }) => {
       <div className={styles.content}>
         <div className={styles.frame205}>
           <img src={logo} alt="Logo" />
-          {styles.title}
+          <h1 className={styles.title}>TimeTable</h1>
         </div>
         <div className={styles.frame206}>
           <div className={styles.frame214}>
