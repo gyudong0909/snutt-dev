@@ -72,17 +72,11 @@ const MyPage = ({ token, onLogout }: MyPageProps) => {
     <div className={styles.container}>
       <div className={styles.upperBar}>
         <div className={styles.sideSection}></div>
-        <div className={styles.middleSection}>마이페이지</div>
+        <div className={styles.topSection}>마이페이지</div>
         <div className={styles.sideSection}></div>
       </div>
       <div className={styles.content}>
-        <button
-          className={styles.button}
-          onClick={() => {
-            navigate('/account');
-          }}
-          style={{ marginTop: '40px' }}
-        >
+        <button className={styles.button} style={{ marginTop: '20px' }}>
           <div className={styles.buttonLeft}>내 계정</div>
           <div className={styles.buttonRight}>
             {meData != null
@@ -151,6 +145,7 @@ const MyPage = ({ token, onLogout }: MyPageProps) => {
           </div>
           <div className={styles.buttonRight}>&nbsp; {'〉'}</div>
         </button>
+        <div className={styles.subtitle}></div>
       </div>
     </div>
   );
