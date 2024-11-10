@@ -1,7 +1,7 @@
 import './reset.css';
 
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './Mypage.module.css';
 
@@ -79,7 +79,6 @@ const MyPage = ({ token, onLogout }: MyPageProps) => {
     <div className={styles.wrapper}>
       <h1>마이페이지</h1>
       <h2 className={styles.body}>{name}</h2>
-      <Link to="/">메인화면으로 이동</Link>
       <button className={styles.button} onClick={onLogout}>
         로그아웃
       </button>
