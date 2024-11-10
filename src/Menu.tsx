@@ -27,8 +27,15 @@ const Menu = ({ token, onLogout }: MenuProps) => {
   }, [location]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <div style={{ flex: 1 }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        overflow: 'hidden',
+      }}
+    >
+      <div style={{ flex: 1, overflowY: 'hidden' }}>
         <Routes>
           <Route element={<MainPage token={token} />} path="/" />
           <Route
@@ -44,7 +51,8 @@ const Menu = ({ token, onLogout }: MenuProps) => {
           justifyContent: 'space-between',
           marginLeft: '30px',
           marginRight: '30px',
-          marginBottom: '44px',
+          marginBottom: '10px',
+          marginTop: '10px',
         }}
       >
         <Link to="/">
