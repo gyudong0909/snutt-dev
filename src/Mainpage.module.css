@@ -90,6 +90,7 @@
   height: 100%;
   border-bottom: 1.5px solid #c4c4c4;
   overflow: hidden;
+  border-top: none;
 }
 
 .timeLabels {
@@ -127,9 +128,11 @@
   line-height: 30px;
   font-weight: bold;
   border-top: none;
+  border-top: none;
 }
 
 .gridLines {
+  border-top: none;
   border-top: none;
   position: absolute;
   top: 30px;
@@ -157,6 +160,8 @@
 .lecturesWrapper {
   position: absolute;
   top: 30px;
+  left: 21px;
+  right: -1px;
   left: 21px;
   right: -1px;
   bottom: 0;
