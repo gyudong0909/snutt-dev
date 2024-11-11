@@ -90,51 +90,6 @@ const MainPage = ({ token }: MainPageProps) => {
 
   const [schedule, setSchedule] = useState<Schedule[]>([
     // {
-    //   name: '미디어프로그래밍 프로젝트',
-    //   location: '49-301',
-    //   day: 1,
-    //   startTime: 9,
-    //   startMinute: 0,
-    //   duration: 75,
-    //   color: '#FF6B6B',
-    // }, // 9:00 ~ 10:15
-    // {
-    //   name: '편집디자인',
-    //   location: '49-215',
-    //   day: 3,
-    //   startTime: 10,
-    //   startMinute: 10,
-    //   duration: 20,
-    //   color: '#FFA500',
-    // }, // 10:10 ~ 10:30
-    // {
-    //   name: '중국어교과 논리 및 논술',
-    //   location: '1-210',
-    //   day: 0,
-    //   startTime: 9,
-    //   startMinute: 20,
-    //   duration: 10,
-    //   color: '#32CD32',
-    // }, // 9:20 ~ 9:30
-    // {
-    //   name: '미디어프리젠테이션',
-    //   location: '49-215',
-    //   day: 1,
-    //   startTime: 15,
-    //   startMinute: 0,
-    //   duration: 40,
-    //   color: '#1E90FF',
-    // }, // 15:00 ~ 15:40
-    // {
-    //   name: '18세기프랑스 문학',
-    //   location: '5-206',
-    //   day: 1,
-    //   startTime: 17,
-    //   startMinute: 10,
-    //   duration: 20,
-    //   color: '#20B2AA',
-    // }, // 17:10 ~ 17:30
-    // {
     //   name: '통합창의디자인 프로젝트',
     //   location: '49-B101',
     //   day: 4,
@@ -215,7 +170,9 @@ const MainPage = ({ token }: MainPageProps) => {
 
   const handleNavigateToLectureList = () => {
     if (TimetableData != null) {
-      navigate(`/timetables/${TimetableData._id}/lectures`);
+      navigate(`/timetables/${TimetableData._id}/lectures`, {
+        state: { timetableData: TimetableData },
+      });
     }
   };
 

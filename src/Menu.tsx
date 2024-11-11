@@ -36,10 +36,7 @@ const Menu = ({ token, onLogout }: MenuProps) => {
           element={<Lecture token={token} />}
           path="/timetables/:id/lectures/:lectureId"
         />
-        <Route
-          element={<Lecturelist token={token} />}
-          path="/timetables/:id/lectures"
-        />
+        <Route element={<Lecturelist />} path="/timetables/:id/lectures" />
       </Routes>
     );
   }

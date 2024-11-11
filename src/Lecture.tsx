@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 interface LectureProps {
   token: string | undefined;
@@ -12,6 +12,7 @@ const Lecture = ({ token }: LectureProps) => {
   });
 
   const { lectureId } = useParams<{ lectureId: string }>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (token != null) {
@@ -21,9 +22,19 @@ const Lecture = ({ token }: LectureProps) => {
     }
   }, [token]);
 
+  const handleBackToMainPage = () => {
+    navigate(-1);
+  };
+
   return (
     <div>
-      <h1>강의 상세보기</h1>
+      <button
+        onClick={handleBackToMainPage}
+        style={{ position: 'absolute', top: '10px', left: '10px' }}
+      >
+        뒤로가기
+      </button>
+      <h1>.............강의 상세보기</h1>
       <p>강의 ID: {lectureId}</p>
       <p>Token: {savedToken}</p>
     </div>
