@@ -2,7 +2,6 @@ import './reset.css';
 
 import { useEffect, useState } from 'react';
 
-import listIcon from './icons/list.png';
 import styles from './Mainpage.module.css';
 
 interface MainPageProps {
@@ -263,15 +262,24 @@ const MainPage = ({ token }: MainPageProps) => {
       <div className={styles.header}>
         <div className={styles.frame211}>
           <div className={styles.frame210}>
-            <img
-              src={listIcon}
-              alt="list"
-              className={styles.disabled}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="19.067px"
+              height="15.048px"
+              viewBox="0 0 20 16"
+              fill="none"
               style={{
-                width: '18px',
-                height: '13px',
+                flexShrink: 0,
+                fill: 'var(--Icon-Normal, #000)',
               }}
-            />
+            >
+              <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M0.772949 0.727051H19.8396V1.59372H0.772949V0.727051ZM0.772964 7.8179H16.373V8.68457H0.772964V7.8179ZM19.8396 14.9088H0.772964V15.7755H19.8396V14.9088Z"
+                fill="black"
+              />
+            </svg>
             <div className={styles.frame47}>
               <span className={styles.titleText}>{TimetableData?.title}</span>
               <span className={styles.creditText}>({credit}학점)</span>
