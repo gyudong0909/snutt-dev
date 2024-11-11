@@ -60,9 +60,8 @@ const Menu = ({ token, onLogout }: MenuProps) => {
             src={activePath === '/' ? timetableIconActive : timetableIcon}
             alt="timetable"
             style={{
-              width: '30px',
-              height: '30px',
-              border: '2px dashed #808080',
+              width: '23px',
+              height: '23px',
             }}
           />
         </Link>
@@ -72,7 +71,6 @@ const Menu = ({ token, onLogout }: MenuProps) => {
           style={{
             width: '30px',
             height: '30px',
-            border: '2px dashed #808080',
           }}
         />
         <img
@@ -81,7 +79,6 @@ const Menu = ({ token, onLogout }: MenuProps) => {
           style={{
             width: '30px',
             height: '30px',
-            border: '2px dashed #808080',
           }}
         />
         <img
@@ -90,7 +87,6 @@ const Menu = ({ token, onLogout }: MenuProps) => {
           style={{
             width: '30px',
             height: '30px',
-            border: '2px dashed #808080',
           }}
         />
         <Link to="/mypage">
@@ -100,7 +96,6 @@ const Menu = ({ token, onLogout }: MenuProps) => {
             style={{
               width: '30px',
               height: '30px',
-              border: '2px dashed #808080',
             }}
           />
         </Link>
