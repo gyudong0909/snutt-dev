@@ -179,31 +179,40 @@ const MainPage = ({ token }: MainPageProps) => {
   }, [TimetableData]);
 
   useEffect(() => {
-    const fetchTimetableRequest = async () => {
-      const response = await fetch(
-        `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': token,
-          },
-        },
-      );
-      return response;
+    const fetchTimetableRequest = async (retryCount = 3): Promise<void> => {
+      while (retryCount > 0) {
+        try {
+          const response = await fetch(
+            `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': token,
+              },
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error('시간표 정보를 가져오는 데 실패했습니다.');
+          }
+
+          const data = (await response.json()) as TimetableResponse;
+          setTimetableData(data);
+          return;
+        } catch (error) {
+          retryCount -= 1;
+          if (retryCount === 0) {
+            console.error(
+              '시간표 정보를 가져오는 도중 오류가 발생했습니다:',
+              error,
+            );
+          }
+        }
+      }
     };
 
-    const requestTimetable = async () => {
-      const TimetableResponse = await fetchTimetableRequest();
-      if (!TimetableResponse.ok) {
-        alert('timetableRequest fetch 오류 발생');
-      }
-      const data = (await TimetableResponse.json()) as TimetableResponse;
-      setTimetableData(data);
-    };
-    requestTimetable().catch((e: unknown) => {
-      alert(e);
-    });
+    void fetchTimetableRequest();
   }, [token]);
 
   const renderLectures = () => {
@@ -232,7 +241,7 @@ const MainPage = ({ token }: MainPageProps) => {
           className={styles.lecture}
           style={{
             top: `${top}%`,
-            left: `${left}%`,
+            left: `calc(${left}%)`,
             height: `${height}%`,
             backgroundColor: color,
           }}
@@ -254,7 +263,15 @@ const MainPage = ({ token }: MainPageProps) => {
       <div className={styles.header}>
         <div className={styles.frame211}>
           <div className={styles.frame210}>
-            <img src={listIcon} alt="list" className={styles.disabled} />
+            <img
+              src={listIcon}
+              alt="list"
+              className={styles.disabled}
+              style={{
+                width: '18px',
+                height: '13px',
+              }}
+            />
             <div className={styles.frame47}>
               <span className={styles.titleText}>{TimetableData?.title}</span>
               <span className={styles.creditText}>({credit}학점)</span>
@@ -294,18 +311,18 @@ const MainPage = ({ token }: MainPageProps) => {
                 className={styles.horizontalLine}
                 style={{
                   top: `${(i / 24) * 100}%`,
-                  borderTop: `1px solid ${i % 2 === 1 ? '#F5F5F5' : '#EBEBED'}`,
+                  borderTop: `2px solid ${i % 2 === 1 ? '#F5F5F5' : '#EBEBED'}`,
                 }}
               ></div>
             ))}
           </div>
           <div className={styles.gridLines}>
             {/* 세로 격자선 (월 화 수 목 금) */}
-            {Array.from({ length: 4 }, (_, i) => (
+            {Array.from({ length: 5 }, (_, i) => (
               <div
                 key={i}
                 className={styles.verticalLine}
-                style={{ left: `calc(${(i + 1) * 20}%)` }}
+                style={{ left: `calc(${i * 20}%)` }}
               ></div>
             ))}
           </div>
