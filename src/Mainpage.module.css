@@ -87,7 +87,7 @@
   position: relative;
   grid-template-columns: 20px repeat(5, 1fr);
   width: 100%;
-  height: calc(100vh - 90px);
+  height: 100%;
   border: 1px solid #ebebed;
   overflow: hidden;
 }
