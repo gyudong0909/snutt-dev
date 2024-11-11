@@ -88,17 +88,7 @@ const MainPage = ({ token }: MainPageProps) => {
   const [credit, setCredit] = useState(0);
   const navigate = useNavigate();
 
-  const [schedule, setSchedule] = useState<Schedule[]>([
-    // {
-    //   name: '통합창의디자인 프로젝트',
-    //   location: '49-B101',
-    //   day: 4,
-    //   startTime: 18,
-    //   startMinute: 20,
-    //   duration: 10,
-    //   color: '#ADFF2F',
-    // }, // 18:20 ~ 18:30
-  ]);
+  const [schedule, setSchedule] = useState<Schedule[]>([]);
 
   // TimetableResponse를 Schedule 배열로 변환하는 함수
   const formatLectureData = (data: TimetableResponse) => {
@@ -178,7 +168,16 @@ const MainPage = ({ token }: MainPageProps) => {
 
   const handleNavigateToLectureDetail = (lectureId: string) => {
     if (TimetableData != null) {
-      navigate(`/timetables/${TimetableData._id}/lectures/${lectureId}`);
+      const lecture = TimetableData.lecture_list.find(
+        (lec) => lec._id === lectureId,
+      );
+      if (lecture != null) {
+        navigate(`/timetables/${TimetableData._id}/lectures/${lectureId}`, {
+          state: { timetableData: TimetableData, lectureData: lecture },
+        });
+      } else {
+        console.error('강의 데이터를 찾을 수 없습니다.');
+      }
     }
   };
 
@@ -323,30 +322,6 @@ const MainPage = ({ token }: MainPageProps) => {
           {/* 강의들 */}
           <div className={styles.lecturesWrapper}>{renderLectures()}</div>
         </div>
-
-        {/* {TimetableData?.lecture_list.map((lecture) => {
-          return (
-            <div
-              key={lecture._id}
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <div>강의명: {lecture.course_title}</div>
-              <div>교수님: {lecture.instructor}</div>
-              <div>
-                시간: {lecture.class_time_json[0].start_time} ~{' '}
-                {lecture.class_time_json[0].end_time}
-                일:
-                {lecture.class_time_json[0].day}
-              </div>
-              <div>
-                {' '}
-                분: {lecture.class_time_json[0].startMinute},{' '}
-                {lecture.class_time_json[0].endMinute}{' '}
-              </div>
-              <br />
-            </div>
-          );
-        })} */}
       </div>
     </div>
   );
