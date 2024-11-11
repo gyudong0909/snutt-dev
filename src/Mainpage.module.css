@@ -28,13 +28,18 @@
 .frame211 {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
+}
+
+.frame208 {
+  margin-left: auto;
 }
 
 .frame210 {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 12px;
 }
 
