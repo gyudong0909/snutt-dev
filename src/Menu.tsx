@@ -10,6 +10,8 @@ import threedotsIcon from './icons/threedots.png';
 import threedotsIconActive from './icons/threedots_active.png';
 import timetableIcon from './icons/timetable.png';
 import timetableIconActive from './icons/timetable_active.png';
+import Lecture from './Lecture';
+import Lecturelist from './Lecturelist';
 import MainPage from './Mainpage';
 import MyPage from './Mypage';
 
@@ -25,6 +27,22 @@ const Menu = ({ token, onLogout }: MenuProps) => {
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location]);
+
+  //timetables 로 시작하는 경우 하단 네비게이션 바 없게
+  if (activePath.startsWith('/timetables/')) {
+    return (
+      <Routes>
+        <Route
+          element={<Lecture token={token} />}
+          path="/timetables/:id/lectures/:lectureId"
+        />
+        <Route
+          element={<Lecturelist token={token} />}
+          path="/timetables/:id/lectures"
+        />
+      </Routes>
+    );
+  }
 
   return (
     <div

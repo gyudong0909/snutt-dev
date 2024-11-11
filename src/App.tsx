@@ -7,15 +7,13 @@ import Home from './Home';
 import Landing from './Landing';
 import Login from './Login';
 import Menu from './Menu';
+type PageName = 'home' | 'login' | 'menu' | 'landing';
+
 export const App = () => {
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState<
-    'home' | 'login' | 'menu' | 'landing'
-  >(() => {
+  const [currentPage, setCurrentPage] = useState<PageName>(() => {
     const savedPage = localStorage.getItem('currentPage');
-    return savedPage != null
-      ? (savedPage as 'home' | 'login' | 'menu' | 'landing')
-      : 'home';
+    return savedPage != null ? (savedPage as PageName) : 'home';
   });
 
   const [token, setToken] = useState<string>();

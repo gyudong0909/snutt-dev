@@ -1,7 +1,9 @@
 import './reset.css';
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
+import studylistIcon from './icons/studylist.png';
 import styles from './Mainpage.module.css';
 
 interface MainPageProps {
@@ -9,71 +11,65 @@ interface MainPageProps {
 }
 
 type TimetableResponse = {
-  _id: 'string';
-  user_id: 'string';
-  year: 0;
-  semester: '1';
-  lecture_list: [
-    {
-      _id: 'string';
-      academic_year: 'string';
-      category: 'string';
-      class_time_json: [
-        {
-          day: '0';
-          place: 'string';
-          startMinute: 0;
-          endMinute: 0;
-          start_time: 'string';
-          end_time: 'string';
-          len: 0;
-          start: 0;
-          lectureBuildings: [
-            {
-              id: 'string';
-              buildingNumber: 'string';
-              buildingNameKor: 'string';
-              buildingNameEng: 'string';
-              locationInDMS: {
-                latitude: 0;
-                longitude: 0;
-              };
-              locationInDecimal: {
-                latitude: 0;
-                longitude: 0;
-              };
-              campus: 'GWANAK';
-            },
-          ];
-        },
-      ];
-      classification: 'string';
-      credit: 0;
-      department: 'string';
-      instructor: 'string';
-      lecture_number: 'string';
-      quota: 0;
-      freshman_quota: 0;
-      remark: 'string';
-      course_number: 'string';
-      course_title: 'string';
-      color: {
-        bg: 'string';
-        fg: 'string';
-      };
-      colorIndex: 0;
-      lecture_id: 'string';
-      snuttEvLecture: {
-        evLectureId: 0;
-      };
-      class_time_mask: [0];
-    },
-  ];
-  title: 'string';
-  theme: '0';
-  themeId: 'string';
-  isPrimary: true;
-  updated_at: '2024-11-08T09:35:57.664Z';
+  _id: string;
+  user_id: string;
+  year: number;
+  semester: string;
+  lecture_list: Array<{
+    _id: string;
+    academic_year: string;
+    category: string;
+    class_time_json: Array<{
+      day: string;
+      place: string;
+      startMinute: number;
+      endMinute: number;
+      start_time: string;
+      end_time: string;
+      len: number;
+      start: number;
+      lectureBuildings: Array<{
+        id: string;
+        buildingNumber: string;
+        buildingNameKor: string;
+        buildingNameEng: string;
+        locationInDMS: {
+          latitude: number;
+          longitude: number;
+        };
+        locationInDecimal: {
+          latitude: number;
+          longitude: number;
+        };
+        campus: string;
+      }>;
+    }>;
+    classification: string;
+    credit: number;
+    department: string;
+    instructor: string;
+    lecture_number: string;
+    quota: number;
+    freshman_quota: number;
+    remark: string;
+    course_number: string;
+    course_title: string;
+    color: {
+      bg: string;
+      fg: string;
+    };
+    colorIndex: number;
+    lecture_id: string;
+    snuttEvLecture: {
+      evLectureId: number;
+    };
+    class_time_mask: number[];
+  }>;
+  title: string;
+  theme: string;
+  themeId: string;
+  isPrimary: boolean;
+  updated_at: string;
 };
 
 interface Schedule {
@@ -84,11 +80,13 @@ interface Schedule {
   startMinute: number; // 분
   duration: number; // 분
   color: string;
+  lectureId: string;
 }
 
 const MainPage = ({ token }: MainPageProps) => {
   const [TimetableData, setTimetableData] = useState<TimetableResponse>();
   const [credit, setCredit] = useState(0);
+  const navigate = useNavigate();
 
   const [schedule, setSchedule] = useState<Schedule[]>([
     // {
@@ -162,6 +160,7 @@ const MainPage = ({ token }: MainPageProps) => {
           startMinute: classTime.startMinute % 60, // 분
           duration: duration, // 분
           color: lectureColor,
+          lectureId: lecture._id,
         };
       });
     });
@@ -214,10 +213,21 @@ const MainPage = ({ token }: MainPageProps) => {
     void fetchTimetableRequest();
   }, [token]);
 
+  const handleNavigateToLectureList = () => {
+    if (TimetableData != null) {
+      navigate(`/timetables/${TimetableData._id}/lectures`);
+    }
+  };
+
+  const handleNavigateToLectureDetail = (lectureId: string) => {
+    if (TimetableData != null) {
+      navigate(`/timetables/${TimetableData._id}/lectures/${lectureId}`);
+    }
+  };
+
   const renderLectures = () => {
     const lectureElements = schedule.map((lecture, index) => {
-      const { name, location, day, startTime, startMinute, duration, color } =
-        lecture;
+      const { name, day, startTime, startMinute, duration, color } = lecture;
 
       // 하루의 시작 시간과 끝 시간 (예: 9시 ~ 21시)
       const dayStartTime = 9 * 60; // 분 단위
@@ -243,12 +253,15 @@ const MainPage = ({ token }: MainPageProps) => {
             left: `calc(${left}%)`,
             height: `${height}%`,
             backgroundColor: color,
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            handleNavigateToLectureDetail(lecture.lectureId);
           }}
         >
           <div className={styles.lectureContent}>
             {name}
             <br />
-            {location}
           </div>
         </div>
       );
@@ -283,6 +296,22 @@ const MainPage = ({ token }: MainPageProps) => {
             <div className={styles.frame47}>
               <span className={styles.titleText}>{TimetableData?.title}</span>
               <span className={styles.creditText}>({credit}학점)</span>
+            </div>
+            <div className={styles.frame208}>
+              {TimetableData != null && (
+                <div className={styles.frame208}>
+                  <img
+                    src={studylistIcon}
+                    onClick={handleNavigateToLectureList}
+                    alt="studylistIcon"
+                    style={{
+                      width: '27px',
+                      height: '23px',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
