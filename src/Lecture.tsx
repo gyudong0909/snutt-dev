@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
+import styles from './Lecture.module.css';
+
 interface LectureData {
   _id: string;
   academic_year: string;
@@ -122,50 +124,128 @@ const Lecture = ({ token }: LectureProps) => {
   };
 
   return (
-    <div>
-      <button
-        onClick={handleBackToMainPage}
-        style={{ position: 'absolute', top: '10px', left: '10px' }}
-      >
-        뒤로가기
-      </button>
-      <h1 style={{ textAlign: 'center' }}>강의 상세보기</h1>
+    <div className={styles.container}>
+      {/* Upper Bar */}
+      <div className={styles.upperBar}>
+        <button
+          onClick={handleBackToMainPage}
+          className={styles.sideSection}
+          style={{
+            backgroundColor: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          뒤로가기
+        </button>
+        <div className={styles.topSection}>강의 상세보기</div>
+        <div className={styles.sideSection}></div>
+      </div>
+
       {lectureData != null ? (
-        <>
-          <p>강의명: {lectureData.course_title}</p>
-          <p>교수님: {lectureData.instructor}</p>
-          <p>학과: {lectureData.department}</p>
-          <p>학점: {lectureData.credit}</p>
-          <p>학년: {lectureData.academic_year}</p>
-          <p>분류: {lectureData.category}</p>
-          <p>강좌번호: {lectureData.course_number}</p>
-          <p>분반번호: {lectureData.lecture_number}</p>
-          <p>정원: {lectureData.quota}</p>
-          <p>
-            수업 시간 및 장소:
-            {lectureData.class_time_json.map((schedule, index) => (
-              <span key={index}>
-                {`${['월', '화', '수', '목', '금'][parseInt(schedule.day)] ?? ''}, `}
-                {`${Math.floor(schedule.startMinute / 60)}시 ${schedule.startMinute % 60}분 ~ `}
-                {`${Math.floor(schedule.endMinute / 60)}시 ${schedule.endMinute % 60}분`}
-                {schedule.place.length > 0 ? ` (${schedule.place})` : ''}
-                {index < lectureData.class_time_json.length - 1 ? ', ' : ''}
-              </span>
-            ))}
-          </p>
+        <div className={styles.content}>
+          {/* Lecture Information */}
+          <div className={styles.subtitle}>강의 정보</div>
+
+          {/* Course Title */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>강의명</div>
+            <div className={styles.textRight}>{lectureData.course_title}</div>
+          </div>
+
+          {/* Instructor */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>교수님</div>
+            <div className={styles.textRight}>{lectureData.instructor}</div>
+          </div>
+
+          {/* Department */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>학과</div>
+            <div className={styles.textRight}>{lectureData.department}</div>
+          </div>
+
+          {/* Credit */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>학점</div>
+            <div className={styles.textRight}>{lectureData.credit}</div>
+          </div>
+
+          {/* Academic Year */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>학년</div>
+            <div className={styles.textRight}>{lectureData.academic_year}</div>
+          </div>
+
+          {/* Category */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>분류</div>
+            <div className={styles.textRight}>{lectureData.category}</div>
+          </div>
+
+          {/* Course Number */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>강좌번호</div>
+            <div className={styles.textRight}>{lectureData.course_number}</div>
+          </div>
+
+          {/* Lecture Number */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>분반번호</div>
+            <div className={styles.textRight}>{lectureData.lecture_number}</div>
+          </div>
+
+          {/* Quota */}
+          <div className={styles.text}>
+            <div className={styles.textLeft}>정원</div>
+            <div className={styles.textRight}>{lectureData.quota}</div>
+          </div>
+
+          {/* Class Time and Place */}
+          <div className={styles.subtitle}>시간 및 장소</div>
+          {lectureData.class_time_json.map((schedule, index) => (
+            <>
+              <div className={styles.text} key={index}>
+                <div className={styles.textLeft}>시간</div>
+                <div className={styles.textRight}>
+                  {!isNaN(parseInt(schedule.day)) &&
+                  parseInt(schedule.day) >= 0 &&
+                  parseInt(schedule.day) < 5
+                    ? ['월', '화', '수', '목', '금'][parseInt(schedule.day)]
+                    : ''}
+                  {` ${Math.floor(schedule.startMinute / 60)}시 ${schedule.startMinute % 60}분 ~ `}
+                  {`${Math.floor(schedule.endMinute / 60)}시 ${schedule.endMinute % 60}분`}
+                </div>
+              </div>
+              <div className={styles.text} key={index}>
+                <div className={styles.textLeft}>장소</div>
+                <div className={styles.textRight}>
+                  {schedule.place.length > 0 ? ` ${schedule.place}` : ''}
+                </div>
+              </div>
+            </>
+          ))}
+          <div className={styles.subtitle}></div>
           <button
+            className={styles.button}
             onClick={() => {
               handleDeleteLecture().catch((error: unknown) => {
                 console.error('삭제 중 오류 발생:', error);
               });
             }}
-            style={{ width: '100px', height: '50px', cursor: 'pointer' }}
+            style={{}}
           >
             삭제
           </button>
-        </>
+        </div>
       ) : (
-        <p>강의 정보를 불러올 수 없습니다.</p>
+        <div className={styles.content}>
+          <div className={styles.text}>
+            <div className={styles.textLeft}>
+              강의 정보를 불러올 수 없습니다.
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
