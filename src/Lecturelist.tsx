@@ -236,7 +236,7 @@ const LectureList = ({ token }: LectureListProps) => {
               <strong>시간:</strong>{' '}
               {lecture.schedule.map((schedule, index) => (
                 <span key={index}>
-                  {`${['월', '화', '수', '목', '금'][schedule.day - 1] ?? ''}, `}
+                  {`${['월', '화', '수', '목', '금'][schedule.day] ?? ''}, `}
                   {`${schedule.startTime}시 ${schedule.startMinute}분 ~ `}
                   {`${schedule.startTime + Math.floor((schedule.startMinute + schedule.duration) / 60)}시 ${(schedule.startMinute + schedule.duration) % 60}분`}
                   {index < lecture.schedule.length - 1 ? ', ' : ''}
