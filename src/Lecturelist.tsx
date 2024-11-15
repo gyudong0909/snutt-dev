@@ -1,5 +1,9 @@
+/* LectureList.tsx */
+
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+import styles from './Lecturelist.module.css';
 
 interface Lecture {
   id: string;
@@ -67,6 +71,11 @@ interface LocationState {
 interface LectureListProps {
   token: string;
 }
+
+const getDayName = (day?: number): string => {
+  if (day === undefined) return '';
+  return ['월', '화', '수', '목', '금'][day - 1] ?? '';
+};
 
 const LectureList = ({ token }: LectureListProps) => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
@@ -139,16 +148,23 @@ const LectureList = ({ token }: LectureListProps) => {
 
     // 강의 목록을 상태로 설정
     const formattedLectures = timetableData.lecture_list.map((lecture) => {
-      const schedule = lecture.class_time_json.map((classTime) => ({
-        name: lecture.course_title,
-        location: classTime.place,
-        day: parseInt(classTime.day, 10),
-        startTime: Math.floor(classTime.startMinute / 60),
-        startMinute: classTime.startMinute % 60,
-        duration: classTime.endMinute - classTime.startMinute,
-        color: '#333', // 기본 색상 설정
-        lectureId: lecture._id,
-      }));
+      const schedule = lecture.class_time_json.map((classTime) => {
+        const lectureBuilding = classTime.lectureBuildings[0]; // 첫 번째 강의동 선택 (필요시 수정)
+
+        return {
+          name: lecture.course_title,
+          location:
+            lectureBuilding !== undefined
+              ? lectureBuilding.buildingNameKor
+              : '장소 미정',
+          day: parseInt(classTime.day, 10),
+          startTime: Math.floor(classTime.startMinute / 60),
+          startMinute: classTime.startMinute % 60,
+          duration: classTime.endMinute - classTime.startMinute,
+          color: '#333', // 기본 색상 설정
+          lectureId: lecture._id,
+        };
+      });
 
       return {
         id: lecture._id,
@@ -169,35 +185,32 @@ const LectureList = ({ token }: LectureListProps) => {
   };
 
   return (
-    <div>
+    <div className={styles.container}>
+      {/* 뒤로가기 버튼 */}
       <button
         onClick={handleBackToMainPage}
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '10px',
-          width: '100px',
-          height: '50px',
-        }}
+        className={styles.buttonBack}
+        aria-label="뒤로가기"
       >
         뒤로가기
       </button>
-      <h1 style={{ textAlign: 'center' }}>강의 목록 페이지</h1>
-      <div>
+
+      {/* 페이지 제목 */}
+      <h1 style={{ textAlign: 'center', marginBottom: '20px' }}>
+        강의 목록 페이지
+      </h1>
+
+      {/* 강의 목록 */}
+      <div className={styles.content}>
         {lectures.length === 0 ? (
-          <p>강의 목록이 없습니다.</p>
+          <div className={styles.lectureItem}>
+            <div className={styles.lectureTitle}>강의 목록이 없습니다.</div>
+          </div>
         ) : (
           lectures.map((lecture) => (
-            <button
+            <div
               key={lecture.id}
-              style={{
-                display: 'block',
-                margin: '10px 0',
-                padding: '20px',
-                textAlign: 'left',
-                width: '100%',
-                cursor: 'pointer',
-              }}
+              className={styles.lectureItem}
               onClick={() => {
                 if (timetableData != null && timetableData._id.length > 0) {
                   const selectedLecture = timetableData.lecture_list.find(
@@ -223,35 +236,42 @@ const LectureList = ({ token }: LectureListProps) => {
                 }
               }}
             >
-              <strong>강의명:</strong> {lecture.courseTitle}
-              <br />
-              <strong>교수:</strong> {lecture.instructor}
-              <br />
-              <strong>학점:</strong> {lecture.credit}학점
-              <br />
-              <strong>과목:</strong> {lecture.department}
-              <br />
-              <strong>학년:</strong> {lecture.academicYear}
-              <br />
-              <strong>시간:</strong>{' '}
-              {lecture.schedule.map((schedule, index) => (
-                <span key={index}>
-                  {`${['월', '화', '수', '목', '금'][schedule.day] ?? ''}, `}
-                  {`${schedule.startTime}시 ${schedule.startMinute}분 ~ `}
-                  {`${schedule.startTime + Math.floor((schedule.startMinute + schedule.duration) / 60)}시 ${(schedule.startMinute + schedule.duration) % 60}분`}
-                  {index < lecture.schedule.length - 1 ? ', ' : ''}
-                </span>
-              ))}
-              <br />
-              <strong>장소:</strong>{' '}
-              {lecture.schedule
-                .map((schedule) => schedule.location)
-                .filter(
-                  (place, index, self) =>
-                    place.length > 0 && self.indexOf(place) === index,
-                )
-                .join(', ')}
-            </button>
+              <div className={styles.lectureTitle}>{lecture.courseTitle}</div>
+              <div className={styles.lectureDetails}>
+                <div className={styles.detailItem}>
+                  <strong>교수:</strong> {lecture.instructor}
+                </div>
+                <div className={styles.detailItem}>
+                  <strong>과, 학년:</strong> {lecture.department},{' '}
+                  {lecture.academicYear}
+                </div>
+                <div className={styles.detailItem}>
+                  <strong>날짜(시간):</strong>{' '}
+                  {lecture.schedule.map((schedule, index) => (
+                    <span key={index}>
+                      {getDayName(schedule.day)} {schedule.startTime}시{' '}
+                      {schedule.startMinute}분 ~{' '}
+                      {schedule.startTime +
+                        Math.floor(
+                          (schedule.startMinute + schedule.duration) / 60,
+                        )}
+                      시 {(schedule.startMinute + schedule.duration) % 60}분
+                      {index < lecture.schedule.length - 1 ? ', ' : ''}
+                    </span>
+                  ))}
+                </div>
+                <div className={styles.detailItem}>
+                  <strong>강의동:</strong>{' '}
+                  {lecture.schedule
+                    .map((schedule) => schedule.location)
+                    .filter(
+                      (place, index, self) =>
+                        place.length > 0 && self.indexOf(place) === index,
+                    )
+                    .join(', ')}
+                </div>
+              </div>
+            </div>
           ))
         )}
       </div>

@@ -1,0 +1,117 @@
+/* Lecturelist.module.css */
+
+.container {
+  font-family: 'Apple SD Gothic Neo', sans-serif;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  height: 100vh; /* 전체 화면 높이 사용 */
+  overflow-y: hidden;
+  padding: 20px; /* 내용 여백 추가 */
+}
+
+.upperBar {
+  display: flex;
+  height: 50px;
+  margin-bottom: 20px; /* 상단 바 아래 여백 추가 */
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.sideSection {
+  font-size: 14px;
+  background-color: transparent; /* 배경 제거 */
+  border: none;
+  width: 100px;
+  cursor: pointer; /* 커서 포인터 표시 */
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+}
+
+.sideSection:hover {
+  color: rgb(180, 180, 180);
+}
+
+.sideSection:active {
+  color: rgb(75, 75, 75);
+}
+
+.topSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-grow: 1;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* 자식 요소 전체 너비 확장 */
+  background-color: transparent; /* 배경 제거 */
+  overflow-y: auto;
+  padding-bottom: 48px;
+}
+
+.lectureItem {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #000; /* 얇은 검은 줄 상단 */
+  border-bottom: 1px solid #000; /* 얇은 검은 줄 하단 */
+  padding: 15px;
+  margin-bottom: 15px; /* 항목 간 여백 */
+  background-color: white; /* 흰색 배경 */
+  cursor: pointer; /* 클릭 가능 표시 */
+}
+
+.lectureItem:hover {
+  background-color: #f0f0f0; /* 호버 시 배경색 변경 */
+}
+
+.lectureItem:active {
+  background-color: #e0e0e0; /* 클릭 시 배경색 변경 */
+}
+
+.lectureTitle {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.lectureDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* 세부 항목 간 간격 */
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  color: #555;
+}
+
+.detailItem strong {
+  width: 80px; /* 라벨 고정 너비 */
+  color: #333;
+}
+
+.buttonBack {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 100px;
+  height: 50px;
+  background-color: transparent; /* 배경 제거 */
+  border: 1px solid #ccc; /* 얇은 회색 경계 */
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.buttonBack:hover {
+  background-color: #f9f9f9;
+  border-color: #999;
+}
