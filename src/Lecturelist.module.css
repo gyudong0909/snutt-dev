@@ -101,10 +101,10 @@
 
 .buttonBack {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 100px;
-  height: 50px;
+  top: 20px;
+  left: 20px;
+  width: 30px;
+  height: 30px;
   background-color: transparent; /* 배경 제거 */
   border: 1px solid #ccc; /* 얇은 회색 경계 */
   border-radius: 5px;

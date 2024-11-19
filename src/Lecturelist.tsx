@@ -1,7 +1,5 @@
-/* LectureList.tsx */
-
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import styles from './Lecturelist.module.css';
 
@@ -15,26 +13,15 @@ interface Lecture {
   schedule: Schedule[];
 }
 
-interface Schedule {
-  name: string;
-  location: string;
-  day: number; // 1: 월요일, 2: 화요일, ..., 5: 금요일
-  startTime: number; // 시
-  startMinute: number; // 분
-  duration: number; // 분
-  color: string;
-  lectureId: string;
-}
-
-interface TimetableData {
+type TimetableResponse = {
   _id: string;
+  user_id: string;
+  year: number;
+  semester: string;
   lecture_list: Array<{
     _id: string;
-    course_title: string;
-    instructor: string;
-    credit: number;
-    department: string;
     academic_year: string;
+    category: string;
     class_time_json: Array<{
       day: string;
       place: string;
@@ -60,88 +47,61 @@ interface TimetableData {
         campus: string;
       }>;
     }>;
+    classification: string;
+    credit: number;
+    department: string;
+    instructor: string;
+    lecture_number: string;
+    quota: number;
+    freshman_quota: number;
+    remark: string;
+    course_number: string;
+    course_title: string;
+    color: {
+      bg: string;
+      fg: string;
+    };
+    colorIndex: number;
+    lecture_id: string;
+    snuttEvLecture: {
+      evLectureId: number;
+    };
+    class_time_mask: number[];
   }>;
-}
+  title: string;
+  theme: string;
+  themeId: string;
+  isPrimary: boolean;
+  updated_at: string;
+};
 
-interface LocationState {
-  timetableData?: TimetableData;
-  timetableDataUpdated?: boolean;
+interface Schedule {
+  name: string;
+  location: string;
+  day: number; // 1: 월요일, 2: 화요일, ..., 5: 금요일
+  startTime: number; // 시
+  startMinute: number; // 분
+  duration: number; // 분
+  color: string;
+  lectureId: string;
 }
 
 interface LectureListProps {
   token: string;
+  timetableData: TimetableResponse | null;
+  setTimetableData: React.Dispatch<
+    React.SetStateAction<TimetableResponse | null>
+  >;
 }
 
 const getDayName = (day?: number): string => {
   if (day === undefined) return '';
-  return ['월', '화', '수', '목', '금'][day - 1] ?? '';
+  return ['월', '화', '수', '목', '금'][day] ?? '';
 };
 
-const LectureList = ({ token }: LectureListProps) => {
+const LectureList = ({ token, timetableData }: LectureListProps) => {
   const [lectures, setLectures] = useState<Lecture[]>([]);
-  const [timetableData, setTimetableData] = useState<TimetableData | null>(
-    null,
-  );
   const navigate = useNavigate();
-  const location = useLocation();
-  const locationState = location.state as LocationState;
-
-  useEffect(() => {
-    // 데이터 가져오기 함수 정의
-    const fetchTimetable = async () => {
-      try {
-        if (
-          locationState.timetableDataUpdated === true ||
-          locationState.timetableData == null
-        ) {
-          const response = await fetch(
-            `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent`,
-            {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': token,
-              },
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error('시간표 데이터를 가져오는 데 실패했습니다.');
-          }
-
-          const data = (await response.json()) as TimetableData;
-          setTimetableData(data);
-        } else {
-          setTimetableData(locationState.timetableData);
-        }
-      } catch (error) {
-        console.error(
-          '시간표 데이터를 가져오는 도중 오류가 발생했습니다:',
-          error,
-        );
-      }
-    };
-
-    // 초기 데이터 로드
-    void fetchTimetable();
-
-    // popstate 이벤트 리스너 등록
-    const handlePopState = () => {
-      void fetchTimetable();
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [
-    token,
-    location.key,
-    locationState.timetableData,
-    locationState.timetableDataUpdated,
-  ]);
 
   useEffect(() => {
     if (timetableData == null) return;
@@ -192,7 +152,7 @@ const LectureList = ({ token }: LectureListProps) => {
         className={styles.buttonBack}
         aria-label="뒤로가기"
       >
-        뒤로가기
+        ←
       </button>
 
       {/* 페이지 제목 */}
