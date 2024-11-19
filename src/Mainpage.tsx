@@ -8,6 +8,10 @@ import styles from './Mainpage.module.css';
 
 interface MainPageProps {
   token: string;
+  timetableData: TimetableResponse | null;
+  setTimetableData: React.Dispatch<
+    React.SetStateAction<TimetableResponse | null>
+  >;
 }
 
 type TimetableResponse = {
@@ -83,11 +87,9 @@ interface Schedule {
   lectureId: string;
 }
 
-const MainPage = ({ token }: MainPageProps) => {
-  const [TimetableData, setTimetableData] = useState<TimetableResponse>();
+const MainPage = ({ timetableData }: MainPageProps) => {
   const [credit, setCredit] = useState(0);
   const navigate = useNavigate();
-
   const [schedule, setSchedule] = useState<Schedule[]>([]);
 
   // TimetableResponse를 Schedule 배열로 변환하는 함수
@@ -112,72 +114,25 @@ const MainPage = ({ token }: MainPageProps) => {
   };
 
   useEffect(() => {
-    const totalCredits = TimetableData?.lecture_list.reduce(
+    if (timetableData == null) return;
+
+    const totalCredits = timetableData.lecture_list.reduce(
       (sum, lecture) => sum + lecture.credit,
       0,
     );
-    if (totalCredits !== undefined) setCredit(totalCredits);
-    if (TimetableData !== undefined)
-      setSchedule(formatLectureData(TimetableData));
-  }, [TimetableData]);
-
-  useEffect(() => {
-    const fetchTimetableRequest = async (retryCount = 3): Promise<void> => {
-      while (retryCount > 0) {
-        try {
-          const response = await fetch(
-            `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent`,
-            {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': token,
-              },
-            },
-          );
-
-          if (!response.ok) {
-            throw new Error('시간표 정보를 가져오는 데 실패했습니다.');
-          }
-
-          const data = (await response.json()) as TimetableResponse;
-          setTimetableData(data);
-          return;
-        } catch (error) {
-          retryCount -= 1;
-          if (retryCount === 0) {
-            console.error(
-              '시간표 정보를 가져오는 도중 오류가 발생했습니다:',
-              error,
-            );
-          }
-        }
-      }
-    };
-
-    void fetchTimetableRequest();
-  }, [token]);
+    setCredit(totalCredits);
+    setSchedule(formatLectureData(timetableData));
+  }, [timetableData]);
 
   const handleNavigateToLectureList = () => {
-    if (TimetableData != null) {
-      navigate(`/timetables/${TimetableData._id}/lectures`, {
-        state: { timetableData: TimetableData },
-      });
+    if (timetableData != null) {
+      navigate(`/timetables/${timetableData._id}/lectures`);
     }
   };
 
   const handleNavigateToLectureDetail = (lectureId: string) => {
-    if (TimetableData != null) {
-      const lecture = TimetableData.lecture_list.find(
-        (lec) => lec._id === lectureId,
-      );
-      if (lecture != null) {
-        navigate(`/timetables/${TimetableData._id}/lectures/${lectureId}`, {
-          state: { timetableData: TimetableData, lectureData: lecture },
-        });
-      } else {
-        console.error('강의 데이터를 찾을 수 없습니다.');
-      }
+    if (timetableData != null) {
+      navigate(`/timetables/${timetableData._id}/lectures/${lectureId}`);
     }
   };
 
@@ -250,11 +205,11 @@ const MainPage = ({ token }: MainPageProps) => {
               />
             </svg>
             <div className={styles.frame47}>
-              <span className={styles.titleText}>{TimetableData?.title}</span>
+              <span className={styles.titleText}>{timetableData?.title}</span>
               <span className={styles.creditText}>({credit}학점)</span>
             </div>
             <div className={styles.frame208}>
-              {TimetableData != null && (
+              {timetableData != null && (
                 <div className={styles.frame208}>
                   <img
                     src={studylistIcon}

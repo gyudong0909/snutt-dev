@@ -1,89 +1,85 @@
 import { useEffect } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import styles from './Lecture.module.css';
 
-interface LectureData {
-  _id: string;
-  academic_year: string;
-  category: string;
-  class_time_json: Array<{
-    day: string;
-    place: string;
-    startMinute: number;
-    endMinute: number;
-    start_time: string;
-    end_time: string;
-    len: number;
-    start: number;
-    lectureBuildings: Array<{
-      id: string;
-      buildingNumber: string;
-      buildingNameKor: string;
-      buildingNameEng: string;
-      locationInDMS: {
-        latitude: number;
-        longitude: number;
-      };
-      locationInDecimal: {
-        latitude: number;
-        longitude: number;
-      };
-      campus: string;
-    }>;
-  }>;
-  classification: string;
-  credit: number;
-  department: string;
-  instructor: string;
-  lecture_number: string;
-  quota: number;
-  freshman_quota: number;
-  remark: string;
-  course_number: string;
-  course_title: string;
-  color: {
-    bg: string;
-    fg: string;
-  };
-  colorIndex: number;
-  lecture_id: string;
-  snuttEvLecture: {
-    evLectureId: number;
-  };
-  class_time_mask: number[];
-}
-
-interface TimetableData {
+type TimetableResponse = {
   _id: string;
   user_id: string;
   year: number;
   semester: string;
-  lecture_list: LectureData[];
+  lecture_list: Array<{
+    _id: string;
+    academic_year: string;
+    category: string;
+    class_time_json: Array<{
+      day: string;
+      place: string;
+      startMinute: number;
+      endMinute: number;
+      start_time: string;
+      end_time: string;
+      len: number;
+      start: number;
+      lectureBuildings: Array<{
+        id: string;
+        buildingNumber: string;
+        buildingNameKor: string;
+        buildingNameEng: string;
+        locationInDMS: {
+          latitude: number;
+          longitude: number;
+        };
+        locationInDecimal: {
+          latitude: number;
+          longitude: number;
+        };
+        campus: string;
+      }>;
+    }>;
+    classification: string;
+    credit: number;
+    department: string;
+    instructor: string;
+    lecture_number: string;
+    quota: number;
+    freshman_quota: number;
+    remark: string;
+    course_number: string;
+    course_title: string;
+    color: {
+      bg: string;
+      fg: string;
+    };
+    colorIndex: number;
+    lecture_id: string;
+    snuttEvLecture: {
+      evLectureId: number;
+    };
+    class_time_mask: number[];
+  }>;
   title: string;
   theme: string;
   themeId: string;
   isPrimary: boolean;
   updated_at: string;
-}
-
-interface LocationState {
-  lectureData?: LectureData;
-  timetableData?: TimetableData;
-}
+};
 
 interface LectureProps {
   token: string;
+  timetableData: TimetableResponse | null;
+  setTimetableData: React.Dispatch<
+    React.SetStateAction<TimetableResponse | null>
+  >;
 }
 
-const Lecture = ({ token }: LectureProps) => {
-  useParams<{ lectureId: string }>();
-  const location = useLocation();
+const Lecture = ({ token, timetableData, setTimetableData }: LectureProps) => {
+  const { lectureId } = useParams<{ lectureId: string }>();
   const navigate = useNavigate();
 
-  const state = location.state as LocationState;
-  const lectureData = state.lectureData;
-  const timetableData = state.timetableData;
+  const lectureData = timetableData?.lecture_list.find(
+    (lecture) => lecture._id === lectureId,
+  );
 
   useEffect(() => {
     if (lectureData == null) {
@@ -112,7 +108,27 @@ const Lecture = ({ token }: LectureProps) => {
             },
           },
         );
+
         if (response.ok) {
+          const timetableResponse = await fetch(
+            `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent`,
+            {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-access-token': token,
+              },
+            },
+          );
+
+          if (!timetableResponse.ok) {
+            throw new Error('시간표 데이터를 가져오는 데 실패했습니다.');
+          }
+
+          const updatedTimetableData =
+            (await timetableResponse.json()) as TimetableResponse;
+
+          setTimetableData(updatedTimetableData);
           alert('강의가 삭제되었습니다.');
           navigate(-1);
         }

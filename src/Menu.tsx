@@ -20,24 +20,137 @@ interface MenuProps {
   onLogout: () => void;
 }
 
+type TimetableResponse = {
+  _id: string;
+  user_id: string;
+  year: number;
+  semester: string;
+  lecture_list: Array<{
+    _id: string;
+    academic_year: string;
+    category: string;
+    class_time_json: Array<{
+      day: string;
+      place: string;
+      startMinute: number;
+      endMinute: number;
+      start_time: string;
+      end_time: string;
+      len: number;
+      start: number;
+      lectureBuildings: Array<{
+        id: string;
+        buildingNumber: string;
+        buildingNameKor: string;
+        buildingNameEng: string;
+        locationInDMS: {
+          latitude: number;
+          longitude: number;
+        };
+        locationInDecimal: {
+          latitude: number;
+          longitude: number;
+        };
+        campus: string;
+      }>;
+    }>;
+    classification: string;
+    credit: number;
+    department: string;
+    instructor: string;
+    lecture_number: string;
+    quota: number;
+    freshman_quota: number;
+    remark: string;
+    course_number: string;
+    course_title: string;
+    color: {
+      bg: string;
+      fg: string;
+    };
+    colorIndex: number;
+    lecture_id: string;
+    snuttEvLecture: {
+      evLectureId: number;
+    };
+    class_time_mask: number[];
+  }>;
+  title: string;
+  theme: string;
+  themeId: string;
+  isPrimary: boolean;
+  updated_at: string;
+};
+
 const Menu = ({ token, onLogout }: MenuProps) => {
   const location = useLocation();
   const [activePath, setActivePath] = useState(location.pathname);
+  const [timetableData, setTimetableData] = useState<TimetableResponse | null>(
+    null,
+  );
 
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location]);
+
+  async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error('네트워크 응답이 올바르지 않습니다.');
+    }
+
+    const data = (await response.json()) as T;
+    return data;
+  }
+
+  useEffect(() => {
+    const fetchTimetableData = async () => {
+      try {
+        const data = await fetchJSON<TimetableResponse>(
+          `https://wafflestudio-seminar-2024-snutt-redirect.vercel.app/v1/tables/recent`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': token,
+            },
+          },
+        );
+        setTimetableData(data);
+      } catch (error) {
+        console.error(
+          '시간표 정보를 가져오는 도중 오류가 발생했습니다:',
+          error,
+        );
+      }
+    };
+
+    void fetchTimetableData();
+  }, [token]);
 
   //timetables 로 시작하는 경우 하단 네비게이션 바 없게
   if (activePath.startsWith('/timetables/')) {
     return (
       <Routes>
         <Route
-          element={<Lecture token={token} />}
+          element={
+            <Lecture
+              token={token}
+              timetableData={timetableData}
+              setTimetableData={setTimetableData}
+            />
+          }
           path="/timetables/:id/lectures/:lectureId"
         />
         <Route
-          element={<Lecturelist token={token} />}
+          element={
+            <Lecturelist
+              token={token}
+              timetableData={timetableData}
+              setTimetableData={setTimetableData}
+            />
+          }
           path="/timetables/:id/lectures"
         />
       </Routes>
@@ -55,10 +168,19 @@ const Menu = ({ token, onLogout }: MenuProps) => {
     >
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <Routes>
-          <Route element={<MainPage token={token} />} path="/" />
           <Route
-            element={<MyPage token={token} onLogout={onLogout} />}
+            path="/"
+            element={
+              <MainPage
+                token={token}
+                timetableData={timetableData}
+                setTimetableData={setTimetableData}
+              />
+            }
+          />
+          <Route
             path="/mypage"
+            element={<MyPage token={token} onLogout={onLogout} />}
           />
         </Routes>
       </div>
