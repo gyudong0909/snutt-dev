@@ -95,7 +95,7 @@ const Lecture = ({ token, timetableData, setTimetableData }: LectureProps) => {
   const handleDeleteLecture = async () => {
     if (lectureData != null && timetableData != null) {
       const timetableId = timetableData._id;
-      const timetableLectureId = lectureData.lecture_id;
+      const timetableLectureId = lectureData._id;
 
       try {
         const response = await fetch(
@@ -130,7 +130,7 @@ const Lecture = ({ token, timetableData, setTimetableData }: LectureProps) => {
 
           setTimetableData(updatedTimetableData);
           alert('강의가 삭제되었습니다.');
-          navigate(-1);
+          navigate('/');
         }
       } catch (error) {
         console.error('오류 발생:', error);
